@@ -12,13 +12,23 @@ app.get('/', (req, res) => {
 
 app.post('/validate', async (req, res) => {
     const link = req.body.link
-    const valid = await	 model.validate(link);
-    // const preview = getPreview(link)
 
-    res.send({
-        valid,
-        // preview,
-    })
+    if (!link) {
+        return res.status(400).send({ error: 'URL tidak boleh kosong'})
+    }
+
+    try {
+        const valid = await	 model.validate(link);
+        // const preview = getPreview(link)
+    
+        res.send({
+            valid,
+            // preview,
+        })
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ error: err.message })
+    }
 })
 
 app.listen(port, () => {
